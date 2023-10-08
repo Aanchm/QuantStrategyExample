@@ -5,10 +5,12 @@ import matplotlib.pyplot as plt
 import yfinance as yfin
 from datetime import date
 
+import os, sys
+
 tickers = ['SPY', 'AAPL', 'MSFT']
 past_years_to_analyse = 5
 data_col = "Close"
-
+csv_file_name = f"{os.path.dirname(os.path.realpath(__file__))}\stocks_data.csv"
 
 def prepare_data(data, date_bounds, column_name):
     business_days = pd.date_range(start=date_bounds[0], end=date_bounds[1], freq='B')
@@ -33,6 +35,8 @@ yfin.pdr_override()
 date_bounds = get_last_n_years_data(past_years_to_analyse)
 data = pdr.get_data_yahoo(tickers, start=date_bounds[0], end=date_bounds[1])
 prepared_data = prepare_data(data, date_bounds, data_col)
+
+prepared_data.to_csv(csv_file_name, index_label = 'Date')
 
 stock_to_analyse = 'MSFT'
 stock_data = prepared_data.loc[:, stock_to_analyse]
